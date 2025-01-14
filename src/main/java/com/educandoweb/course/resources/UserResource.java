@@ -1,19 +1,38 @@
 package com.educandoweb.course.resources;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.educandoweb.course.entities.User;
+import com.educandoweb.course.services.UserService;
 
 @RestController
 @RequestMapping(value = "/users") // CRIA O ENDPOINT EX: Localhost:8080/users. abre os users
-public class UserResource {
+public class UserResource { //User resource depende do user service, injetado automaticamente com autowired.
+	
+	@Autowired
+	private UserService service;
 	
 	@GetMapping // Mapeia usando response, para buscar os usuarios
-	public ResponseEntity<User> findAll(){
-		User u = new User(1L,"Maria", "Maria@gmail.com", "99999","12345");
-		return ResponseEntity.ok().body(u);
+	public ResponseEntity<List<User>> findAll(){
+		
+		List <User> list = service.findAll();
+		return ResponseEntity.ok().body(list);
 	}
+	
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<User> findById(@PathVariable Long id){
+		
+		User obj = service.findById(id);
+		return ResponseEntity.ok().body(obj);
+		
+	}
+	
+	
 }
